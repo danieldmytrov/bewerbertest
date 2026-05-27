@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Persönlichkeitsprofil</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --or:#e8620a;--or-mid:#f07020;--or-light:#f4a05a;
+  --or-pale:#fdebd8;--or-ultra:#fff7f0;
+  --white:#ffffff;--gray-50:#fafafa;--gray-100:#f2f2f2;
+  --gray-200:#e4e4e4;--gray-400:#9a9a9a;--gray-600:#555;--gray-800:#1a1a1a;
+  --text:#1e1208;--shadow:0 2px 12px rgba(0,0,0,.07);--shadow-lg:0 8px 32px rgba(0,0,0,.11)
+}
+html,body{width:100%;min-height:100vh;background:var(--white);font-family:'Inter',sans-serif;color:var(--text);overflow-x:hidden}
+.screen{display:none;min-height:100vh;width:100%;animation:fadeIn .4s ease}
+.screen.active{display:flex;flex-direction:column}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* ── INTRO ── */
+#screen-intro{background:linear-gradient(155deg,var(--or-ultra) 0%,var(--white) 65%);align-items:center;justify-content:center;padding:2.5rem 1.5rem}
+.intro-inner{max-width:460px;width:100%;text-align:center}
+.intro-mark{width:70px;height:70px;background:var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.75rem;box-shadow:0 4px 22px rgba(232,98,10,.28)}
+.intro-mark svg{width:30px;height:30px;fill:none;stroke:white;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.intro-chip{display:inline-block;background:var(--or-pale);color:var(--or);font-size:.68rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:1.25rem}
+.intro-title{font-family:'Playfair Display',serif;font-size:2.15rem;font-weight:400;line-height:1.22;color:var(--text);margin-bottom:1rem}
+.intro-title em{color:var(--or);font-style:normal}
+.intro-body{font-size:.92rem;color:var(--gray-600);line-height:1.75;margin-bottom:1.75rem}
+.intro-hint{background:var(--or-ultra);border:1px solid var(--or-pale);border-radius:14px;padding:1rem 1.2rem;margin-bottom:2rem;text-align:left}
+.intro-hint p{font-size:.8rem;color:var(--or);line-height:1.65}
+.intro-hint strong{color:var(--or)}
+.btn-start{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--or);color:white;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;border:none;padding:15px 0;border-radius:50px;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(232,98,10,.28);width:100%;max-width:320px}
+.btn-start:hover{background:var(--or-mid);transform:translateY(-1px)}
+.btn-start:active{transform:scale(.98)}
+
+/* ── QUESTION ── */
+#screen-question{background:var(--white);justify-content:flex-start}
+.q-topbar{background:var(--white);padding:1.1rem 1.4rem .8rem;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:10}
+.q-prog-row{display:flex;align-items:center;gap:10px;margin-bottom:.55rem}
+.q-prog-track{flex:1;height:5px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--or-light));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.q-prog-num{font-size:.72rem;font-weight:600;color:var(--or);min-width:36px;text-align:right}
+.q-dim-pill{display:inline-flex;align-items:center;gap:5px;background:var(--or-ultra);color:var(--or);font-size:.66rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.q-body{flex:1;padding:1.75rem 1.4rem 1.4rem;display:flex;flex-direction:column;max-width:560px;margin:0 auto;width:100%}
+.q-label{font-size:.7rem;font-weight:600;letter-spacing:2px;color:var(--gray-400);text-transform:uppercase;margin-bottom:.75rem}
+.q-stem{font-family:'Playfair Display',serif;font-size:1.38rem;font-weight:400;line-height:1.45;color:var(--text);margin-bottom:.6rem}
+.q-context{font-size:.83rem;color:var(--gray-600);font-style:italic;line-height:1.55;margin-bottom:1.75rem}
+.scale-ends{display:flex;justify-content:space-between;margin-bottom:.75rem}
+.scale-ends span{font-size:.72rem;color:var(--gray-600);max-width:130px;line-height:1.3}
+.scale-ends span:last-child{text-align:right}
+.scale-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:auto}
+.scale-btn{
+  aspect-ratio:1;border-radius:13px;border:2px solid var(--gray-200);
+  background:var(--white);color:var(--gray-600);font-size:1rem;font-weight:500;
+  font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center
+}
+.scale-btn:hover{border-color:var(--or-light);color:var(--or);background:var(--or-ultra)}
+.scale-btn.selected{border-color:var(--or);background:var(--or);color:white;transform:scale(1.09);box-shadow:0 4px 14px rgba(232,98,10,.3)}
+.btn-next{width:100%;padding:15px;border-radius:50px;border:none;background:var(--gray-200);color:var(--gray-400);font-family:'Inter',sans-serif;font-size:.92rem;font-weight:500;cursor:not-allowed;transition:all .3s;margin-top:2rem}
+.btn-next.ready{background:var(--or);color:white;cursor:pointer;box-shadow:0 4px 14px rgba(232,98,10,.22)}
+.btn-next.ready:active{transform:scale(.98)}
+
+/* ── DONE ── */
+#screen-done{background:linear-gradient(155deg,var(--or-ultra) 0%,var(--white) 70%);align-items:center;justify-content:center;padding:2rem;text-align:center}
+.done-circle{width:82px;height:82px;background:var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;animation:popIn .5s ease;box-shadow:0 4px 22px rgba(232,98,10,.28)}
+.done-circle svg{width:36px;height:36px;fill:none;stroke:white;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.done-h{font-family:'Playfair Display',serif;font-size:1.85rem;color:var(--text);margin-bottom:.7rem}
+.done-p{font-size:.88rem;color:var(--gray-600);line-height:1.7;max-width:340px;margin:0 auto 1rem}
+.done-sub{font-size:.72rem;color:var(--gray-400)}
+
+/* ── PIN ── */
+#screen-pin{background:#141210;align-items:center;justify-content:center;padding:2rem}
+.pin-wrap{max-width:300px;width:100%;text-align:center}
+.pin-lockico{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.pin-lockico svg{width:22px;height:22px;fill:rgba(255,255,255,.5)}
+.pin-lbl{font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:.4rem}
+.pin-sub{font-size:1.05rem;font-weight:300;color:white;margin-bottom:2rem}
+.pin-dots{display:flex;justify-content:center;gap:18px;margin-bottom:2.25rem;height:15px;align-items:center}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.32);background:transparent;transition:all .12s}
+.pin-dot.filled{background:white;border-color:white}
+.pin-dot.error{background:#ff6060;border-color:#ff6060}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1rem}
+.pin-key{height:68px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:white;font-family:'Inter',sans-serif;cursor:pointer;transition:all .12s;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pin-key:active{background:rgba(255,255,255,.22);transform:scale(.94)}
+.pin-key .num{font-size:1.45rem;font-weight:300;line-height:1}
+.pin-key .sub{font-size:.45rem;letter-spacing:1.8px;color:rgba(255,255,255,.4);margin-top:3px}
+.pin-key.empty{background:transparent;cursor:default;pointer-events:none}
+.pin-key.del{font-size:1.05rem;background:transparent;color:rgba(255,255,255,.65)}
+.pin-err{font-size:.78rem;color:#ff8a80;margin-top:.4rem;min-height:20px;transition:opacity .25s}
+.pin-err.hidden{opacity:0}
+
+/* ── RESULT ── */
+#screen-result{background:var(--gray-50);justify-content:flex-start}
+.res-header{background:var(--or);padding:1.75rem 1.4rem 1.6rem;color:white}
+.res-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.res-header h2{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400}
+.res-date{font-size:.72rem;opacity:.65}
+.res-score-row{display:flex;align-items:center;gap:1.25rem}
+.res-ring{position:relative;width:88px;height:88px;flex-shrink:0}
+.res-ring svg{transform:rotate(-90deg)}
+.rring-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:7}
+.rring-fill{fill:none;stroke:white;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1)}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-pct{font-size:1.35rem;font-weight:600;color:white}
+.ring-lbl{font-size:.52rem;color:rgba(255,255,255,.65);letter-spacing:1px;text-transform:uppercase}
+.res-verdict{flex:1}
+.vbadge{display:inline-block;padding:3px 11px;border-radius:20px;font-size:.65rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:.45rem}
+.v-a{background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.32)}
+.v-b{background:rgba(255,230,80,.18);color:#ffe87a;border:1px solid rgba(255,220,60,.3)}
+.v-c{background:rgba(255,80,70,.18);color:#ffb3ae;border:1px solid rgba(255,80,70,.3)}
+.vtitle{font-size:1.05rem;font-weight:500;margin-bottom:.2rem}
+.vdesc{font-size:.78rem;opacity:.75;line-height:1.45}
+.res-body{padding:1.2rem 1.4rem}
+.sec-lbl{font-size:.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray-400);margin-bottom:.85rem}
+.dim-list{display:flex;flex-direction:column;gap:9px;margin-bottom:1.4rem}
+.dim-row{background:var(--white);border-radius:14px;padding:.9rem 1.1rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:.9rem}
+.dim-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.dim-info{flex:1}
+.dim-name{font-size:.78rem;font-weight:600;margin-bottom:4px;color:var(--text)}
+.dim-track{height:5px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+.dim-bar{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.dim-val{font-size:.78rem;font-weight:600;min-width:34px;text-align:right}
+.rec-card{background:var(--white);border-radius:14px;padding:1.1rem 1.25rem;box-shadow:var(--shadow);margin-bottom:1.2rem}
+.rec-card .sec-lbl{margin-bottom:.65rem}
+.rec-text{font-size:.88rem;color:var(--text);line-height:1.68}
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.4rem}
+.risk-tile{background:var(--white);border-radius:14px;padding:.9rem 1rem;box-shadow:var(--shadow);border-left:4px solid var(--or)}
+.risk-tile.warn{border-left-color:#f4a261}
+.risk-tile.danger{border-left-color:#d94f2a}
+.risk-lbl{font-size:.6rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);margin-bottom:.3rem}
+.risk-val{font-size:.88rem;font-weight:600;color:var(--text)}
+.risk-sub{font-size:.72rem;color:var(--gray-600);margin-top:2px}
+.btn-new{width:100%;padding:14px;border-radius:50px;border:1.5px solid var(--gray-200);background:transparent;color:var(--gray-600);font-family:'Inter',sans-serif;font-size:.86rem;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:2rem}
+.btn-new:hover{border-color:var(--or);color:var(--or)}
+.res-footer{text-align:center;font-size:.68rem;color:var(--gray-400);padding-bottom:1.5rem}
+</style>
+</head>
+<body>
+
+<!-- ══ INTRO ══ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-inner">
+    <div class="intro-mark">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </div>
+    <div class="intro-chip">Persönlichkeitsprofil</div>
+    <h1 class="intro-title">Wie tickst<br>du <em>wirklich?</em></h1>
+    <p class="intro-body">In diesem kurzen Test möchten wir besser verstehen, zu welchen Einsatzbereichen und Kunden du am besten passt. Es gibt keine richtigen oder falschen Antworten – sei einfach ehrlich.</p>
+    <div class="intro-hint">
+      <p>💡 <strong>Hinweis:</strong> Beantworte alle Fragen so wie es für dich natürlich ist. Der Test dauert ca. 5 Minuten und hilft uns, dir die passenden Einsätze zuzuordnen.</p>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      Test starten
+    </button>
+  </div>
+</div>
+
+<!-- ══ QUESTION ══ -->
+<div class="screen" id="screen-question">
+  <div class="q-topbar">
+    <div class="q-prog-row">
+      <div class="q-prog-track"><div class="q-prog-fill" id="progfill" style="width:0%"></div></div>
+      <div class="q-prog-num" id="prognum">1 / 15</div>
+    </div>
+    <div class="q-dim-pill" id="qdim">–</div>
+  </div>
+  <div class="q-body">
+    <div class="q-label" id="qlabel">SITUATION 1</div>
+    <div class="q-stem" id="qstem"></div>
+    <div class="q-context" id="qctx"></div>
+    <div class="scale-ends">
+      <span id="lbl-lo"></span>
+      <span id="lbl-hi"></span>
+    </div>
+    <div class="scale-row" id="scalerow"></div>
+    <button class="btn-next" id="btnnext" onclick="nextQ()">Weiter</button>
+  </div>
+</div>
+
+<!-- ══ DONE ══ -->
+<div class="screen" id="screen-done">
+  <div style="text-align:center;padding:2.5rem 1.5rem;margin:auto">
+    <div class="done-circle">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 class="done-h">Vielen Dank!</h2>
+    <p class="done-p">Du hast alle Fragen beantwortet. Bitte gib das Gerät jetzt an deinen Ansprechpartner zurück.</p>
+    <p class="done-sub">Deine Antworten wurden erfasst.</p>
+  </div>
+</div>
+
+<!-- ══ PIN ══ -->
+<div class="screen" id="screen-pin">
+  <div class="pin-wrap">
+    <div class="pin-lockico">
+      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    </div>
+    <div class="pin-lbl">Mitarbeiter-Zugang</div>
+    <div class="pin-sub">PIN eingeben</div>
+    <div class="pin-dots" id="pindots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinKey('1')"><span class="num">1</span><span class="sub"> </span></button>
+      <button class="pin-key" onclick="pinKey('2')"><span class="num">2</span><span class="sub">ABC</span></button>
+      <button class="pin-key" onclick="pinKey('3')"><span class="num">3</span><span class="sub">DEF</span></button>
+      <button class="pin-key" onclick="pinKey('4')"><span class="num">4</span><span class="sub">GHI</span></button>
+      <button class="pin-key" onclick="pinKey('5')"><span class="num">5</span><span class="sub">JKL</span></button>
+      <button class="pin-key" onclick="pinKey('6')"><span class="num">6</span><span class="sub">MNO</span></button>
+      <button class="pin-key" onclick="pinKey('7')"><span class="num">7</span><span class="sub">PQRS</span></button>
+      <button class="pin-key" onclick="pinKey('8')"><span class="num">8</span><span class="sub">TUV</span></button>
+      <button class="pin-key" onclick="pinKey('9')"><span class="num">9</span><span class="sub">WXYZ</span></button>
+      <button class="pin-key empty"></button>
+      <button class="pin-key" onclick="pinKey('0')"><span class="num">0</span><span class="sub"> </span></button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-err hidden" id="pinerr">Falscher PIN. Bitte erneut versuchen.</div>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="screen-result">
+  <div class="res-header">
+    <div class="res-header-top">
+      <h2>Auswertung</h2>
+      <span class="res-date" id="resdate"></span>
+    </div>
+    <div class="res-score-row">
+      <div class="res-ring">
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <circle class="rring-bg" cx="44" cy="44" r="36"/>
+          <circle class="rring-fill" id="ringfill" cx="44" cy="44" r="36" stroke-dasharray="226" stroke-dashoffset="226"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-pct" id="ringpct">–</div>
+          <div class="ring-lbl">Passung</div>
+        </div>
+      </div>
+      <div class="res-verdict">
+        <div class="vbadge" id="vbadge"></div>
+        <div class="vtitle" id="vtitle"></div>
+        <div class="vdesc" id="vdesc"></div>
+      </div>
+    </div>
+  </div>
+  <div class="res-body">
+    <div class="sec-lbl">Dimensionen im Detail</div>
+    <div class="dim-list" id="dimlist"></div>
+    <div class="rec-card">
+      <div class="sec-lbl">Unsere Empfehlung</div>
+      <div class="rec-text" id="rectext"></div>
+    </div>
+    <div class="sec-lbl">Risiko-Übersicht</div>
+    <div class="risk-grid" id="riskgrid"></div>
+    <button class="btn-new" onclick="resetAll()">← Neuer Bewerber</button>
+    <div class="res-footer">Alltagshilfe Hannover UG · Vertraulich · Bahnhofstraße 85, 31515 Wunstorf</div>
+  </div>
+</div>
+
+<script>
+const QS = [
+  {
+    stem:"Du hast deinem Freund versprochen, ihm beim Umzug zu helfen. Am Morgen merkst du: du bist total müde und hast keine Lust.",
+    ctx:"Denk daran, wie du dich in so einer Situation wirklich verhältst.",
+    lo:"Ich gehe auf jeden Fall hin",
+    hi:"Ich sage wahrscheinlich ab",
+    dim:"Zuverlässigkeit", icon:"🤝"
+  },
+  {
+    stem:"Du bist Mitglied in einem Hobby-Team. Am Tag des Trainings hast du leichte Kopfschmerzen – die anderen erwarten dich aber.",
+    ctx:"Nichts Ernstes, aber du fühlst dich nicht 100%.",
+    lo:"Ich erscheine trotzdem",
+    hi:"Ich bleibe lieber zu Hause",
+    dim:"Belastbarkeit", icon:"💪"
+  },
+  {
+    stem:"Deine Freundesgruppe plant seit Wochen einen gemeinsamen Ausflug. Kurzfristig bekommst du ein viel besseres Angebot.",
+    ctx:"Die anderen freuen sich schon seit Wochen darauf und rechnen mit dir.",
+    lo:"Ich halte mein Versprechen",
+    hi:"Ich nehme das bessere Angebot an",
+    dim:"Teamgeist", icon:"👥"
+  },
+  {
+    stem:"Du leihst dir das Auto eines Freundes. Beim Zurückbringen entdeckst du einen kleinen Kratzer – er hat ihn noch nicht bemerkt.",
+    ctx:"Es wäre einfach, einfach nichts zu sagen.",
+    lo:"Ich sage es ihm sofort",
+    hi:"Ich hoffe, er merkt es nicht",
+    dim:"Ehrlichkeit", icon:"✊"
+  },
+  {
+    stem:"Du hast ein Jahr lang mit einer Gruppe auf ein gemeinsames Ziel hingearbeitet. Kurz vor dem Abschluss bekommst du ein attraktives Angebot woanders.",
+    ctx:"Die Gruppe ist auf dich angewiesen bis zum Ende.",
+    lo:"Ich bleibe bis zum Abschluss",
+    hi:"Ich nehme das neue Angebot an",
+    dim:"Langfristigkeit", icon:"🎯"
+  },
+  {
+    stem:"Nach einer Party bei Freunden schlafen alle oder sind gegangen. Die Wohnung sieht chaotisch aus. Niemand sieht, was du tust.",
+    ctx:"Du könntest einfach gehen – keiner würde es mitbekommen.",
+    lo:"Ich räume trotzdem auf",
+    hi:"Ich gehe – das ist nicht mein Job",
+    dim:"Eigeninitiative", icon:"⚡"
+  },
+  {
+    stem:"In deiner Hobby-Gruppe gibt es jemanden, der regelmäßig unzuverlässig ist und das Miteinander belastet.",
+    ctx:"Es fällt allen auf, aber keiner sagt etwas.",
+    lo:"Ich spreche es offen an",
+    hi:"Ich ziehe mich lieber zurück",
+    dim:"Konfliktfähigkeit", icon:"💬"
+  },
+  {
+    stem:"Du bist in einer persönlichen Durststrecke – keine Energie, kein Spaß. Trotzdem haben die anderen auf dich gezählt.",
+    ctx:"Die Gruppe würde es merken, wenn du nicht kommst.",
+    lo:"Ich ziehe es trotzdem durch",
+    hi:"Ich pausiere bis es mir besser geht",
+    dim:"Ausdauer", icon:"🔋"
+  },
+  {
+    stem:"Jemand in deiner Gruppe hat einen Fehler gemacht. Du warst dabei – du könntest so tun als hättest du nichts damit zu tun.",
+    ctx:"Niemand würde dich direkt dafür verantwortlich machen.",
+    lo:"Ich stehe dazu, auch wenn's unangenehm ist",
+    hi:"Ich halte mich lieber raus",
+    dim:"Verantwortungsgefühl", icon:"🛡️"
+  },
+  {
+    stem:"Du hast fest zugesagt, am Wochenende bei einem gemeinsamen Projekt mitzumachen. Freitagabend merkst du, du hast es total vergessen.",
+    ctx:"Die anderen haben bereits alles um deine Anwesenheit herumgeplant.",
+    lo:"Ich sage sofort Bescheid und organisiere Ersatz wenn möglich",
+    hi:"Ich hoffe, dass es auch ohne mich klappt",
+    dim:"Zuverlässigkeit", icon:"🤝"
+  },
+  {
+    stem:"Ein Kollege oder Mitspieler bittet dich, ihm eine Aufgabe zu erklären, die du selbst gerade noch lernst.",
+    ctx:"Du bist nicht der Experte – aber er fragt trotzdem dich.",
+    lo:"Ich helfe ihm so gut ich kann und sage klar was ich weiß und was nicht",
+    hi:"Ich verweise ihn lieber an jemanden der das besser kann",
+    dim:"Eigeninitiative", icon:"⚡"
+  },
+  {
+    stem:"Du merkst in einer Gruppe, dass eine neue Person sich schwertut und noch nicht richtig ankommt.",
+    ctx:"Sie sagt nichts, aber man sieht es ihr an.",
+    lo:"Ich spreche sie von mir aus an und biete Unterstützung an",
+    hi:"Ich warte bis sie selbst auf mich zukommt",
+    dim:"Teamgeist", icon:"👥"
+  },
+  {
+    stem:"Du hast eine Routineaufgabe, die du schon sehr oft gemacht hast – heute läuft sie mal nicht rund.",
+    ctx:"Es zieht sich und kostet mehr Nerven als sonst – aber es ist nichts Dramatisches.",
+    lo:"Ich ziehe es durch – solche Tage gehören dazu",
+    hi:"Ich mache eine Pause und komme dann zurück",
+    dim:"Ausdauer", icon:"🔋"
+  },
+  {
+    stem:"Jemand aus deinem Umfeld erzählt dir stolz von einer Entscheidung – du siehst aber ein echtes Problem darin.",
+    ctx:"Er hat sich dabei viel gedacht und ist sichtlich begeistert.",
+    lo:"Ich spreche meine Bedenken vorsichtig aber ehrlich an",
+    hi:"Ich sage nichts – er hat es so entschieden",
+    dim:"Ehrlichkeit", icon:"✊"
+  },
+  {
+    stem:"Du erfährst, dass du in einem Team eingeplant wurdest – ohne vorher gefragt zu werden. Es wäre eigentlich dein freier Tag.",
+    ctx:"Die anderen gehen davon aus, dass du dabei bist.",
+    lo:"Ich helfe trotzdem – das Team braucht mich",
+    hi:"Ich mache klar, dass man mich hätte fragen müssen",
+    dim:"Teamgeist", icon:"👥"
+  }
+];
+
+let cur=0, answers=[], sel=null, pinEntry='';
+const PIN='0000';
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+id);
+  el.classList.add('active');
+  el.style.animation='none';void el.offsetHeight;el.style.animation='fadeIn .4s ease';
+}
+
+function startQuiz(){show('question');renderQ(0)}
+
+function renderQ(i){
+  sel=null;
+  document.getElementById('btnnext').classList.remove('ready');
+  const q=QS[i];
+  const pct=Math.round((i/QS.length)*100);
+  document.getElementById('progfill').style.width=pct+'%';
+  document.getElementById('prognum').textContent=(i+1)+' / '+QS.length;
+  document.getElementById('qdim').textContent=q.dim;
+  document.getElementById('qlabel').textContent='SITUATION '+(i+1);
+  document.getElementById('qstem').textContent=q.stem;
+  document.getElementById('qctx').textContent=q.ctx;
+  document.getElementById('lbl-lo').textContent=q.lo;
+  document.getElementById('lbl-hi').textContent=q.hi;
+  const row=document.getElementById('scalerow');
+  row.innerHTML='';
+  for(let v=1;v<=7;v++){
+    const b=document.createElement('button');
+    b.className='scale-btn';b.textContent=v;
+    b.onclick=(()=>{const val=v;return()=>pick(val,b)})();
+    row.appendChild(b);
+  }
+  const wrap=document.getElementById('screen-question');
+  wrap.style.animation='none';void wrap.offsetHeight;wrap.style.animation='fadeIn .35s ease';
+}
+
+function pick(v,btn){
+  sel=v;
+  document.querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btnnext').classList.add('ready');
+}
+
+function nextQ(){
+  if(sel===null)return;
+  answers.push({dim:QS[cur].dim,icon:QS[cur].icon,val:sel});
+  cur++;
+  if(cur<QS.length){renderQ(cur)}
+  else{show('done');setTimeout(()=>show('pin'),3200)}
+}
+
+/* PIN */
+function pinKey(k){
+  if(pinEntry.length>=4)return;
+  pinEntry+=k;updateDots();
+  if(pinEntry.length===4){
+    setTimeout(()=>{
+      if(pinEntry===PIN){showResult()}
+      else{
+        document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+        document.getElementById('pinerr').classList.remove('hidden');
+        document.getElementById('pindots').style.animation='shake .4s ease';
+        setTimeout(()=>{
+          pinEntry='';updateDots();
+          document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+          document.getElementById('pinerr').classList.add('hidden');
+          document.getElementById('pindots').style.animation='';
+        },950);
+      }
+    },120);
+  }
+}
+function pinDel(){if(!pinEntry.length)return;pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById('pinerr').classList.add('hidden')}
+function updateDots(){for(let i=0;i<4;i++){const d=document.getElementById('pd'+i);d.classList.remove('filled','error');if(i<pinEntry.length)d.classList.add('filled')}}
+
+/* RESULT */
+function showResult(){
+  show('result');
+  const now=new Date();
+  document.getElementById('resdate').textContent=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+
+  // aggregate per dim: val 1=best(100%) 7=worst(0%)
+  const agg={};
+  answers.forEach(a=>{
+    if(!agg[a.dim])agg[a.dim]={total:0,count:0,icon:a.icon};
+    agg[a.dim].total+=Math.round(((8-a.val)/6)*100);
+    agg[a.dim].count++;
+  });
+  const dims={};
+  Object.entries(agg).forEach(([d,v])=>dims[d]={score:Math.round(v.total/v.count),icon:v.icon});
+  const allS=Object.values(dims).map(d=>d.score);
+  const total=Math.round(allS.reduce((a,b)=>a+b,0)/allS.length);
+
+  setTimeout(()=>{
+    const c=2*Math.PI*36;
+    document.getElementById('ringfill').style.strokeDashoffset=c-(total/100)*c;
+    let n=0;const iv=setInterval(()=>{n=Math.min(n+2,total);document.getElementById('ringpct').textContent=n+'%';if(n>=total)clearInterval(iv)},18);
+  },300);
+
+  let bCls,bTxt,vTit,vDes,rec;
+  if(total>=72){
+    bCls='v-a';bTxt='✓ Starke Passung';vTit='Sehr empfehlenswert';
+    vDes='Profil passt sehr gut zu unseren Anforderungen';
+    rec='Diese Person zeigt durchgehend ein Profil, das auf hohe Zuverlässigkeit, Eigenverantwortung und echten Teamgeist hinweist. Die Antworten wirken konsistent und authentisch. Wir empfehlen eine zügige Einstellung – idealerweise mit einem kurzen Kennenlerntag beim Kunden als letztem Schritt.';
+  } else if(total>=45){
+    bCls='v-b';bTxt='◈ Bedingte Passung';vTit='Mit Vorbehalt geeignet';
+    vDes='Solide Basis – einzelne Bereiche genauer prüfen';
+    rec='Grundlegende Werte sind vorhanden, aber einzelne Dimensionen zeigen Abweichungen vom gewünschten Profil. Wir empfehlen ein gezieltes Gespräch zu den schwächsten Bereichen sowie eine kurze Probearbeit (2–3 Stunden beim Kunden), bevor eine endgültige Entscheidung getroffen wird.';
+  } else {
+    bCls='v-c';bTxt='✗ Geringe Passung';vTit='Nicht empfohlen';
+    vDes='Kritische Abweichungen in mehreren Bereichen erkannt';
+    rec='Mehrere Kerndimensionen zeigen Muster, die auf erhöhten Krankenstand, Teamkonflikte oder mangelnde Eigeninitiative hindeuten können. Eine Einstellung birgt ein deutlich erhöhtes Risiko. Wir empfehlen Ablehnung oder eine sehr ausführliche zweite Gesprächsrunde.';
+  }
+
+  document.getElementById('vbadge').className='vbadge '+bCls;
+  document.getElementById('vbadge').textContent=bTxt;
+  document.getElementById('vtitle').textContent=vTit;
+  document.getElementById('vdesc').textContent=vDes;
+  document.getElementById('rectext').textContent=rec;
+
+  const dl=document.getElementById('dimlist');dl.innerHTML='';
+  Object.entries(dims).forEach(([name,{score,icon}])=>{
+    const col=score>=72?'#c85500':score>=45?'#f4a261':'#d94f2a';
+    const bg=score>=72?'#fdebd8':score>=45?'#fef3e8':'#fde0da';
+    const r=document.createElement('div');r.className='dim-row';
+    r.innerHTML=`<div class="dim-ico" style="background:${bg}">${icon}</div><div class="dim-info"><div class="dim-name">${name}</div><div class="dim-track"><div class="dim-bar" style="width:0%;background:${col}" data-w="${score}"></div></div></div><div class="dim-val" style="color:${col}">${score}%</div>`;
+    dl.appendChild(r);
+  });
+  setTimeout(()=>document.querySelectorAll('.dim-bar').forEach(b=>{b.style.width=b.dataset.w+'%'}),420);
+
+  const bel=dims['Belastbarkeit']?dims['Belastbarkeit'].score:50;
+  const team=dims['Teamgeist']?dims['Teamgeist'].score:50;
+  const zuv=dims['Zuverlässigkeit']?dims['Zuverlässigkeit'].score:50;
+  const allD=Object.entries(dims);
+  const minD=allD.reduce((a,b)=>b[1].score<a[1].score?b:a);
+  const maxD=allD.reduce((a,b)=>b[1].score>a[1].score?b:a);
+  document.getElementById('riskgrid').innerHTML=`
+    <div class="risk-tile ${bel<45?'danger':bel<70?'warn':''}">
+      <div class="risk-lbl">Krankenstand-Risiko</div>
+      <div class="risk-val">${bel>=70?'Gering':bel>=45?'Mittel':'Erhöht'}</div>
+      <div class="risk-sub">Belastbarkeit ${bel}%</div>
+    </div>
+    <div class="risk-tile ${(team<45||zuv<45)?'danger':(team<70||zuv<70)?'warn':''}">
+      <div class="risk-lbl">Fluktuation-Risiko</div>
+      <div class="risk-val">${(team>=70&&zuv>=70)?'Gering':(team>=45&&zuv>=45)?'Mittel':'Erhöht'}</div>
+      <div class="risk-sub">Team ${team}% · Zuverl. ${zuv}%</div>
+    </div>
+    <div class="risk-tile">
+      <div class="risk-lbl">Stärkste Dimension</div>
+      <div class="risk-val">${maxD[1].icon} ${maxD[0]}</div>
+      <div class="risk-sub">${maxD[1].score}% Ausprägung</div>
+    </div>
+    <div class="risk-tile ${minD[1].score<45?'warn':''}">
+      <div class="risk-lbl">Schwächste Dimension</div>
+      <div class="risk-val">${minD[1].icon} ${minD[0]}</div>
+      <div class="risk-sub">${minD[1].score}% Ausprägung</div>
+    </div>`;
+}
+
+function resetAll(){
+  cur=0;answers=[];sel=null;pinEntry='';updateDots();
+  document.getElementById('pinerr').classList.add('hidden');
+  show('intro');
+}
+</script>
+</body>
+</html>
